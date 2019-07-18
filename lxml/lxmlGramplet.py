@@ -2,7 +2,7 @@
 #
 # Copyright (C) 2009        Brian G. Matherly
 # Copyright (C) 2010        Douglas S. Blank
-# Copyright (C) 2011-2012   Jerome Rapinat
+# Copyright (C) 2011-2019   Jerome Rapinat
 #
 # This program is free software; you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
@@ -78,7 +78,7 @@ try:
     from lxml import etree, objectify
     LXML_OK = True
     # current code is working with:
-    # LXML_VERSION (3, 3, 3)
+    # LXML_VERSION (4, 3, 4)
     # LIBXML_VERSION (2, 9, 1))
     # LIBXSLT_VERSION (1, 1, 28))
     LXML_VERSION = etree.LXML_VERSION
@@ -122,7 +122,7 @@ def epoch(t):
 #
 #-------------------------------------------------------------------------
 
-NAMESPACE = '{http://gramps-project.org/xml/1.7.1/}'
+NAMESPACE = '{http://gramps-project.org/xml/1.8.0/}'
 
 class lxmlGramplet(Gramplet):
     """
@@ -321,7 +321,7 @@ class lxmlGramplet(Gramplet):
             #tree = etree.ElementTree(file=filename)
             tree = etree.parse(filename)
             doctype = tree.docinfo.doctype
-            current = '<!DOCTYPE database PUBLIC "-//Gramps//DTD Gramps XML 1.7.1//EN" "http://gramps-project.org/xml/1.7.1/grampsxml.dtd">'
+            current = '<!DOCTYPE database PUBLIC "-//Gramps//DTD Gramps XML 1.8.0//EN" "http://gramps-project.org/xml/1.8.0/grampsxml.dtd">'
             if self.RNGValidation(tree, rng) == True:
                 try:
                     self.ParseXML(tree, filename)
@@ -423,9 +423,18 @@ class lxmlGramplet(Gramplet):
 
                     if three.tag == NAMESPACE + 'pname':
                         text = str(three.attrib.get('value'))
+                        translation = str(three.attrib.get('lang'))
+                        if translation == 'None':
+                            translation = xml_lang()[0:2]
+                            text = text + _(' - (? or %(lang)s)') % {'lang':translation}
+                        else:
+                            text = text + _(' - (%(lang)s)') % {'lang':translation}
                         if text not in places:
                             places.append(text) # temp display
                     if three.tag == NAMESPACE + 'stitle' and three.text not in sources:
+                        # need to add an exception
+                        if not three.text:
+                            three.text = ""
                         sources.append(three.text)
                     if three.tag == NAMESPACE + 'file' and three.items() not in thumbs:
                         thumbs.append(three.items())
@@ -528,7 +537,7 @@ class lxmlGramplet(Gramplet):
     def xsd(self, xsd, filename):
         """
         Look at schema, validation, conform, structure, content, etc...
-        Code for 1.7.1 and +
+        Code for 1.8.0 and +
         """
 
         # syntax check against XSD for file format
@@ -549,7 +558,7 @@ class lxmlGramplet(Gramplet):
     def check_valid(self, filename):
         """
         Look at schema, validation, conform, etc...
-        Code for 1.7.1 and +
+        Code for 1.8.0 and +
         """
 
         # syntax check against DTD for file format
@@ -739,7 +748,7 @@ class lxmlGramplet(Gramplet):
 
         LOG.info('Looking at gallery')
 
-        from gramps.gui.thumbnails import get_thumbnail_path
+        from gramps.gen.utils.thumbnails import get_thumbnail_path
 
         # full clear line for proper styling
 
