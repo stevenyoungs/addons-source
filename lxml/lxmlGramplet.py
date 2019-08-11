@@ -537,7 +537,8 @@ class lxmlGramplet(Gramplet):
     def xsd(self, xsd, filename):
         """
         Look at schema, validation, conform, structure, content, etc...
-        Code for 1.8.0 and +
+
+        Code for 1.7.1
         """
 
         # syntax check against XSD for file format
@@ -558,7 +559,8 @@ class lxmlGramplet(Gramplet):
     def check_valid(self, filename):
         """
         Look at schema, validation, conform, etc...
-        Code for 1.8.0 and +
+
+        Code for 1.7.1
         """
 
         # syntax check against DTD for file format
