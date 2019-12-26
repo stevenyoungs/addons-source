@@ -69,11 +69,12 @@ class Indicator(Gtk.DrawingArea):
 #------------------------------------------------------------------------
 class EntryGrid(Gtk.Grid):
 
-    def __init__(self, headings=None, tooltips=None, model=None, callback=None):
+    def __init__(self, headings=None, tooltips=None, actions=None, model=None, callback=None):
         Gtk.Grid.__init__(self)
 
         self.headings = headings
         self.tooltips = tooltips
+        self.actions = actions
         self.model = model
         self.widgets = []
         self.indicators = []
@@ -91,9 +92,10 @@ class EntryGrid(Gtk.Grid):
         if len(self.model) > 0:
             self.selected = model.get_iter((0,))
 
-    def set_columns(self, columns, tooltips):
+    def set_columns(self, columns, tooltips, actions):
         self.headings = columns
         self.tooltips = tooltips
+        self.actions = actions
 
     def build(self):
 
@@ -187,6 +189,7 @@ class EntryGrid(Gtk.Grid):
     def clean_up(self):
         self.headings = None
         self.tooltips = None
+        self.actions = None
         self.model = None
         self.widgets = None
         self.indicators = None

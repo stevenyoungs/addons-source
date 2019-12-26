@@ -748,7 +748,8 @@ class MultiSection(Gtk.Box):
         self.model = Gtk.ListStore(*[str] * (len(columns) + 1))
         self.entry_grid.set_model(self.model)
         tooltips = [column[1] for column in columns]
-        self.entry_grid.set_columns(self.columns, tooltips)
+        actions = [column[3] for column in columns]
+        self.entry_grid.set_columns(self.columns, tooltips, actions)
         self.entry_grid.build()
 
     def populate_gui(self, event):
