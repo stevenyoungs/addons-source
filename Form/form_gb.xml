@@ -186,6 +186,33 @@
             <column>
                 <_attribute>Occupation</_attribute>
                 <size>25</size>
+                <action title='Create Occupation event'>
+                    <enable_if>
+                        <![CDATA[
+                        True
+                        ]]>
+                    </enable_if>
+                    <command>
+                        <![CDATA[
+# build the new OCCUPATION event
+event = Event()
+event.set_type(EventType.OCCUPATION)
+event.set_date_object(self.event.get_date_object())
+event.add_citation(self.citation.get_handle())
+event.set_description(value)
+with DbTxn("form_action", self.db) as trans:
+    # add to the database
+    self.db.add_event(event, trans)
+    # Add new event reference to the Person record
+    event_ref = EventRef()
+    event_ref.ref = event.get_handle()
+    event_ref.set_role(EventRoleType.PRIMARY)
+    person = self.db.get_person_from_handle(object)
+    person.add_event_ref(event_ref)
+    self.db.commit_person(person, trans)
+                        ]]>
+                    </command>
+                </action>
             </column>
             <column>
                 <_attribute>Where Born</_attribute>
