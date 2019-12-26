@@ -26,6 +26,7 @@ Form definitions.
 # Python imports
 #
 #---------------------------------------------------------------
+from collections import namedtuple
 import os
 import xml.dom.minidom
 
@@ -158,9 +159,23 @@ class Form():
                         long_text = _(longname[0].childNodes[0].data)
                     else:
                         long_text = attr_text
+                    column_actions = column.getElementsByTagName('action')
+                    actions = []
+                    action = namedtuple('action', ['title', 'command', 'enable_if'])
+                    for act in column_actions:
+                        title = _(act.attributes['title'].value)
+                        commands = act.getElementsByTagName('command')
+                        command = commands[0].childNodes[0].wholeText
+                        enable_if = None
+                        enable_if_elements = act.getElementsByTagName('enable_if')
+                        if enable_if_elements:
+                            # strip both leading and trailing whitespace. This allows clearer formatting in the XML file.
+                            enable_if = enable_if_elements[0].firstChild.wholeText.strip()
+                        actions.append(action(title, command, enable_if))
                     self.__columns[id][role].append((attr_text,
                                                      long_text,
-                                                     int(size_text)))
+                                                     int(size_text),
+                                                     actions))
         dom.unlink()
 
     def get_form_ids(self):
