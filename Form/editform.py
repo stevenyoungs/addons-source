@@ -307,7 +307,8 @@ class EditForm(ManagedWindow):
                              self.track,
                              self.event,
                              self.citation,
-                             form_id)
+                             form_id,
+                             self.action_callback)
 
         self.headings = HeadingsTab(self.dbstate,
                                        self.uistate,
@@ -369,6 +370,9 @@ class EditForm(ManagedWindow):
         Display the relevant portion of Gramps manual
         """
         display_help(webpage='Form_Addons')
+
+    def action_callback(self, section, object, row, column, value, command):
+        exec(command)
 
 #------------------------------------------------------------------------
 #
@@ -477,11 +481,12 @@ class DetailsTab(GrampsTab):
     """
     Details tab in the form editor.
     """
-    def __init__(self, dbstate, uistate, track, event, citation, form_id):
+    def __init__(self, dbstate, uistate, track, event, citation, form_id, action_callback):
         self.db = dbstate.db
         self.event = event
         self.citation = citation
         self.form_id = form_id
+        self._action_callback = action_callback
         GrampsTab.__init__(self, dbstate, uistate, track, _('Details'))
 
         self.populate_gui(event)
@@ -502,7 +507,7 @@ class DetailsTab(GrampsTab):
             if section_type == 'multi':
                 section = MultiSection(self.dbstate, self.uistate, self.track,
                                        self.event, self.citation, self.form_id,
-                                       role)
+                                       role, self._action_callback)
             elif section_type == 'person':
                 section = PersonSection(self.dbstate, self.uistate, self.track,
                                         self.event, self.citation, self.form_id,
@@ -555,7 +560,7 @@ class MultiSection(Gtk.Box):
     SelectPerson = SelectorFactory('Person')
 
     def __init__(self, dbstate, uistate, track, event, citation, form_id,
-                 section):
+                 section, action_callback):
         Gtk.Box.__init__(self, orientation=Gtk.Orientation.VERTICAL)
 
         self.dbstate = dbstate
@@ -566,6 +571,8 @@ class MultiSection(Gtk.Box):
         self.section = section
         self.event = event
         self.citation = citation
+
+        self._action_callback = action_callback
 
         self.model = None
         self.columns = []
@@ -626,7 +633,7 @@ class MultiSection(Gtk.Box):
         down_btn.connect('clicked', self.__move_person, 'down')
         hbox.pack_start(down_btn, expand=False, fill=True, padding=0)
 
-        self.entry_grid = EntryGrid(callback=self.change_person)
+        self.entry_grid = EntryGrid(callback=self.change_person, action_callback=self.action_callback)
 
         self.pack_start(hbox, expand=False, fill=True, padding=0)
         self.pack_start(self.entry_grid, expand=True, fill=True, padding=0)
@@ -700,6 +707,9 @@ class MultiSection(Gtk.Box):
 
         if person:
             self.model.set_value(iter_, 0, person.get_handle())
+
+    def action_callback(self, row, column, command):
+        self._action_callback(self, self.model[row][0], row, column, self.model[row][column], command)
 
     def __new_person_row(self, person):
         """

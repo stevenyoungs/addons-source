@@ -69,7 +69,7 @@ class Indicator(Gtk.DrawingArea):
 #------------------------------------------------------------------------
 class EntryGrid(Gtk.Grid):
 
-    def __init__(self, headings=None, tooltips=None, actions=None, model=None, callback=None):
+    def __init__(self, headings=None, tooltips=None, actions=None, model=None, callback=None, action_callback=None):
         Gtk.Grid.__init__(self)
 
         self.headings = headings
@@ -80,6 +80,7 @@ class EntryGrid(Gtk.Grid):
         self.indicators = []
         self.selected = None
         self.callback = callback
+        self.action_callback = action_callback
 
     def set_model(self, model):
         self.model = model
@@ -142,6 +143,7 @@ class EntryGrid(Gtk.Grid):
                 entry.set_tooltip_text(self.tooltips[column - 1])
                 entry.connect('changed', self.changed, row, column)
                 entry.connect('focus-in-event', self.got_focus, row)
+                entry.connect('populate_popup', self.populate_popup, row, column)
                 entry.show()
                 self.attach(entry, column + 1, row + 1, 1, 1)
                 entry_row.append(entry)
@@ -161,7 +163,7 @@ class EntryGrid(Gtk.Grid):
         self.indicators[row].set_active(True)
 
     def activate_action(self, widget, row, column, action):
-        pass
+        self.action_callback(row, column, action.command)
 
     def populate_popup(self, entry, menu, row, column):
         if self.actions[column - 1]:
@@ -214,6 +216,7 @@ class EntryGrid(Gtk.Grid):
         self.indicators = None
         self.selected = None
         self.callback = None
+        self.callback_action = None
 
 def set_size(entry):
     layout = entry.get_layout()
