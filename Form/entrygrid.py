@@ -160,6 +160,25 @@ class EntryGrid(Gtk.Grid):
         self.selected = self.model.get_iter((row,))
         self.indicators[row].set_active(True)
 
+    def activate_action(self, widget, row, column, action):
+        pass
+
+    def populate_popup(self, entry, menu, row, column):
+        if self.actions[column - 1]:
+            action_id = 0
+            for action in self.actions[column - 1]:
+                action_menuitem = Gtk.MenuItem(label=action.title)
+                # add the action if there is no 'enable_if' expression or the result of eval(action.enable_if) is True (or convertible to True)
+                if action.enable_if is None or eval(action.enable_if):
+                    action_menuitem.connect('activate', self.activate_action, row, column, action)
+                    action_menuitem.show_all()
+                    menu.insert(action_menuitem, action_id)
+                    action_id += 1
+            if action_id:
+                separator = Gtk.SeparatorMenuItem()
+                separator.show_all()
+                menu.insert(separator, action_id)
+
     def changed(self, entry, row, column):
         set_size(entry)
         self.model.handler_block(self.sig_id)
