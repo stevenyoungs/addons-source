@@ -332,6 +332,7 @@ class EditForm(ManagedWindow):
         """
         Called when the user clicks the OK button.
         """
+        self.citation.set_date_object(self.event.get_date_object())
         with DbTxn(self.get_menu_title(), self.db) as trans:
             if not self.event.get_handle():
                 self.db.add_event(self.event, trans)
