@@ -11,6 +11,9 @@
             <_attribute>Registration District</_attribute>
         </heading>
         <heading>
+            <_attribute>Registration Sub-district</_attribute>
+        </heading>
+        <heading>
             <_attribute>Administrative Area</_attribute>
             <_longname>County/Administrative Area</_longname>
         </heading>
@@ -136,6 +139,9 @@
         </heading>
         <heading>
             <_attribute>Registration District</_attribute>
+        </heading>
+        <heading>
+            <_attribute>Registration Sub-district</_attribute>
         </heading>
         <heading>
             <_attribute>Administrative Area</_attribute>
