@@ -192,7 +192,7 @@
             </column>
         </section>
     </form>
-    <form id='UK1841' type='Census' title='1841 England and Wales Census' date='6 Jun 1841' reference='Department: HO, Series: 107, Piece: , Book: , Folio: , Page: '>
+    <form id='UK1841' type='Census' title='1841 England and Wales Census' date='6 Jun 1841' reference='Department: HO, Series: 107, Piece: , Book: , Folio: , Page: , Line: '>
         <heading>
             <_attribute>City or Borough</_attribute>
         </heading>
