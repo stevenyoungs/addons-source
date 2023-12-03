@@ -718,6 +718,12 @@
             <_attribute>Borough, U.D. or R.D.</_attribute>
         </heading>
         <heading>
+            <_attribute>Registration District</_attribute>
+        </heading>
+        <heading>
+            <_attribute>Registration Sub-District</_attribute>
+        </heading>
+        <heading>
             <_attribute>Registration District and Sub-district</_attribute>
         </heading>
         <section role='Primary' type='multi'>
